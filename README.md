@@ -70,3 +70,11 @@ make docker-run
 ```
 
 For more details, please refer to the  [makefile](makefile)
+
+## How to test APIs from swagger page
+
+Start the server and go to the localhost swagger page by following URL
+
+```URL
+http://localhost:8080/swagger/index.html
+```
