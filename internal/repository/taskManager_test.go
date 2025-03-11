@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/brionac626/taskManager/models"
-	"github.com/rs/xid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -26,11 +25,11 @@ func Test_taskRepo_GetTasks(t *testing.T) {
 	canceledCtx, cancel := context.WithCancel(context.Background())
 
 	tests := []struct {
-		name      string
-		mockSetup func()
-		want      []models.Task
-		args      args
-		wantErr   bool
+		name           string
+		mockSetup      func()
+		want           []models.Task
+		args           args
+		wantErr        bool
 		wantErrContent error
 	}{
 		{
@@ -49,9 +48,9 @@ func Test_taskRepo_GetTasks(t *testing.T) {
 			mockSetup: func() {
 				manager.Store("task3", nil)
 			},
-			want:    expectNoTasks,
-			args:    args{ctx: context.Background()},
-			wantErr: true,
+			want:           expectNoTasks,
+			args:           args{ctx: context.Background()},
+			wantErr:        true,
 			wantErrContent: ErrGetTasksFailed,
 		},
 		{
@@ -59,9 +58,9 @@ func Test_taskRepo_GetTasks(t *testing.T) {
 			mockSetup: func() {
 				cancel()
 			},
-			want:    expectNoTasks,
-			args:    args{ctx: canceledCtx},
-			wantErr: true,
+			want:           expectNoTasks,
+			args:           args{ctx: canceledCtx},
+			wantErr:        true,
 			wantErrContent: context.Canceled,
 		},
 		{
@@ -99,13 +98,10 @@ func Test_taskRepo_CreateTasks(t *testing.T) {
 	}
 
 	newTasks := []models.Task{
-		{ID: xid.New().String(), Name: "Task 1", Status: 0},
-		{ID: xid.New().String(), Name: "Task 2", Status: 1},
+		{Name: "Task 1", Status: 0},
+		{Name: "Task 2", Status: 1},
 	}
-	newTasksWithWrongID := []models.Task{
-		{ID: "task1", Name: "Task 1", Status: 0},
-		{ID: "task2", Name: "Task 2", Status: 1},
-	}
+
 	canceledCtx, cancel := context.WithCancel(context.Background())
 
 	tests := []struct {
@@ -124,15 +120,6 @@ func Test_taskRepo_CreateTasks(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "create tasks with wrong ID",
-			args: args{
-				ctx:   context.Background(),
-				tasks: newTasksWithWrongID,
-			},
-			wantErr: true,
-			wantErrContent: ErrTaskID,
-		},
-		{
 			name: "create tasks with context cancellation",
 			mockSetup: func() {
 				cancel()
@@ -141,7 +128,7 @@ func Test_taskRepo_CreateTasks(t *testing.T) {
 				ctx:   canceledCtx,
 				tasks: newTasks,
 			},
-			wantErr: true,
+			wantErr:        true,
 			wantErrContent: context.Canceled,
 		},
 	}

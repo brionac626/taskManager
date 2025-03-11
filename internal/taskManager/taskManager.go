@@ -52,7 +52,7 @@ func (h *Handler) CreateTasks(c echo.Context) error {
 		)
 	}
 
-	for i, task := range req.Tasks {
+	for _, task := range req.Tasks {
 		if err := task.Validate(); err != nil {
 			log.Println("invalid err", err)
 			return c.JSON(
@@ -63,7 +63,6 @@ func (h *Handler) CreateTasks(c echo.Context) error {
 				},
 			)
 		}
-		req.Tasks[i].NewTaskID()
 	}
 
 	if err := h.repo.CreateTasks(ctx, req.Tasks); err != nil {
@@ -97,6 +96,16 @@ func (h *Handler) UpdateTask(c echo.Context) error {
 
 	if req.IsNoChanges() {
 		return c.NoContent(http.StatusOK)
+	}
+
+	if err := req.Validate(); err != nil {
+		return c.JSON(
+			http.StatusBadRequest,
+			&models.ErrorResponse{
+				Code:    http.StatusBadRequest,
+				Message: err.Error(),
+			},
+		)
 	}
 
 	if err := h.repo.UpdateTask(ctx, taskID, req.Name, req.Status); err != nil {

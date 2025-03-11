@@ -144,6 +144,22 @@ func TestHandler_CreateTasks(t *testing.T) {
 	}
 	invalidReqBody, err := json.Marshal(invalidTasks)
 	assert.NoError(t, err)
+	invalidTaskName := models.CreateNewTasksRequest{
+		Tasks: []models.Task{
+			{ID: "1", Name: "", Status: 0},
+			{ID: "2", Name: "", Status: 0},
+		},
+	}
+	invalidNameReqBody, err := json.Marshal(invalidTaskName)
+	assert.NoError(t, err)
+	invalidTaskStatus := models.CreateNewTasksRequest{
+		Tasks: []models.Task{
+			{ID: "1", Name: "Task 1", Status: 3},
+			{ID: "2", Name: "Task 2", Status: -1},
+		},
+	}
+	invalidStatusReqBody, err := json.Marshal(invalidTaskStatus)
+	assert.NoError(t, err)
 
 	type args struct {
 		rec *httptest.ResponseRecorder
@@ -220,6 +236,36 @@ func TestHandler_CreateTasks(t *testing.T) {
 			name: "create tasks with invalid tasks",
 			mockSetup: func() *http.Request {
 				req := httptest.NewRequest(http.MethodPost, "/tasks", bytes.NewBuffer(invalidReqBody))
+				req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+
+				return req
+			},
+			args: args{
+				rec: httptest.NewRecorder(),
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			expectedResponse:   models.ErrorResponse{Code: http.StatusBadRequest},
+			wantErr:            false,
+		},
+		{
+			name: "create tasks with invalid tasks name",
+			mockSetup: func() *http.Request {
+				req := httptest.NewRequest(http.MethodPost, "/tasks", bytes.NewBuffer(invalidNameReqBody))
+				req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+
+				return req
+			},
+			args: args{
+				rec: httptest.NewRecorder(),
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			expectedResponse:   models.ErrorResponse{Code: http.StatusBadRequest},
+			wantErr:            false,
+		},
+		{
+			name: "create tasks with invalid tasks status",
+			mockSetup: func() *http.Request {
+				req := httptest.NewRequest(http.MethodPost, "/tasks", bytes.NewBuffer(invalidStatusReqBody))
 				req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
 				return req
@@ -318,6 +364,8 @@ func TestHandler_UpdateTask(t *testing.T) {
 	notFoundTaskID := "not_found"
 	name := "Updated Task"
 	status := 1
+	invalidName := ""
+	invalidStatus := -1
 	updateNameAndStatus := models.UpdateTaskRequest{Name: &name, Status: &status}
 	nameAndStatusReqBody, err := json.Marshal(updateNameAndStatus)
 	assert.NoError(t, err)
@@ -326,6 +374,15 @@ func TestHandler_UpdateTask(t *testing.T) {
 	assert.NoError(t, err)
 	updateStatusOnly := models.UpdateTaskRequest{Status: &status}
 	statusOnlyReqBody, err := json.Marshal(updateStatusOnly)
+	assert.NoError(t, err)
+	updateInvalidName := models.UpdateTaskRequest{Name: &invalidName}
+	updateInvalidNameReqBody, err := json.Marshal(updateInvalidName)
+	assert.NoError(t, err)
+	updateInvalidStatus := models.UpdateTaskRequest{Status: &invalidStatus}
+	updateInvalidStatusReqBody, err := json.Marshal(updateInvalidStatus)
+	assert.NoError(t, err)
+	updateInvalidNameAndStatus := models.UpdateTaskRequest{Name: &invalidName, Status: &invalidStatus}
+	updateInvalidNameAndStatusReqBody, err := json.Marshal(updateInvalidNameAndStatus)
 	assert.NoError(t, err)
 
 	type args struct {
@@ -405,6 +462,51 @@ func TestHandler_UpdateTask(t *testing.T) {
 			name: "update task invalid request body",
 			mockSetup: func() *http.Request {
 				req := httptest.NewRequest(http.MethodPut, fmt.Sprintf("/tasks/%s", taskID), bytes.NewBufferString("invalid_json"))
+				req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+
+				return req
+			},
+			args: args{
+				rec: httptest.NewRecorder(),
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			expectedResponse:   models.ErrorResponse{Code: http.StatusBadRequest},
+			wantErr:            false,
+		},
+		{
+			name: "update task invalid task name",
+			mockSetup: func() *http.Request {
+				req := httptest.NewRequest(http.MethodPut, fmt.Sprintf("/tasks/%s", taskID), bytes.NewBuffer(updateInvalidNameReqBody))
+				req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+
+				return req
+			},
+			args: args{
+				rec: httptest.NewRecorder(),
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			expectedResponse:   models.ErrorResponse{Code: http.StatusBadRequest},
+			wantErr:            false,
+		},
+		{
+			name: "update task invalid task status",
+			mockSetup: func() *http.Request {
+				req := httptest.NewRequest(http.MethodPut, fmt.Sprintf("/tasks/%s", taskID), bytes.NewBuffer(updateInvalidStatusReqBody))
+				req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+
+				return req
+			},
+			args: args{
+				rec: httptest.NewRecorder(),
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			expectedResponse:   models.ErrorResponse{Code: http.StatusBadRequest},
+			wantErr:            false,
+		},
+		{
+			name: "update task invalid task name and status",
+			mockSetup: func() *http.Request {
+				req := httptest.NewRequest(http.MethodPut, fmt.Sprintf("/tasks/%s", taskID), bytes.NewBuffer(updateInvalidNameAndStatusReqBody))
 				req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
 				return req

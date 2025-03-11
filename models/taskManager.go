@@ -11,6 +11,18 @@ type UpdateTaskRequest struct {
 	Status *int    `json:"status,omitempty"`
 }
 
+func (utr *UpdateTaskRequest) Validate() error {
+	if utr.Name != nil && *utr.Name == "" {
+        return ErrTaskNameEmpty
+    }
+
+    if utr.Status != nil && (*utr.Status != 0 && *utr.Status != 1) {
+        return ErrInvalidStatus
+    }
+
+    return nil
+}
+
 // IsNoChanges checks if the UpdateTaskRequest contains no changes.
 func (utr *UpdateTaskRequest) IsNoChanges() bool {
 	return utr.Name == nil && utr.Status == nil

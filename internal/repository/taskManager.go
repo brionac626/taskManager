@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	"github.com/brionac626/taskManager/models"
-	"github.com/rs/xid"
 )
 
 type taskRepo struct{}
@@ -74,10 +73,7 @@ func (t *taskRepo) CreateTasks(ctx context.Context, tasks []models.Task) error {
 	}
 
 	for _, task := range tasks {
-		if _, err := xid.FromString(task.ID); err != nil {
-			return ErrTaskID
-		}
-
+		task.NewTaskID()
 		manager.Store(task.ID, task)
 	}
 
