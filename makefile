@@ -21,7 +21,12 @@ run:
 # Run Docker container
 docker-run:
 	@echo "Running Docker container $(DOCKER_IMAGE_NAME):$(DOCKER_TAG)..."
-	@docker run -p 8080:8080 $(DOCKER_IMAGE_NAME):$(DOCKER_TAG) --name $(DOCKER_IMAGE_NAME)
+	@docker run --rm -d -p 8080:8080 --name $(DOCKER_IMAGE_NAME) $(DOCKER_IMAGE_NAME):$(DOCKER_TAG)
+
+# Stop docker-container
+docker-stop:
+	@echo "Stopping Docker container ${DOCKER_IMAGE_NAME}"
+	@docker stop ${DOCKER_IMAGE_NAME}
 
 # Run go test for the project
 test:
@@ -32,6 +37,6 @@ test:
 clean:
 	@echo "Cleaning up..."
 	@rm -f $(BINARY_NAME)
-	@docker rmi $(DOCKER_IMAGE_NAME):$(DOCKER_TAG)
+	@docker rmi $(DOCKER_IMAGE_NAME):${DOCKER_TAG}
 
-.PHONY: build docker-build run docker-run clean
+.PHONY: build docker-build run docker-run docker-stop clean
