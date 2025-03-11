@@ -131,10 +131,14 @@ func TestHandler_CreateTasks(t *testing.T) {
 	e.POST("/tasks", handler.CreateTasks)
 
 	tasks := models.CreateNewTasksRequest{
-		Tasks: []models.Task{
-			{ID: "1", Name: "Task 1", Status: 0},
-			{ID: "2", Name: "Task 2", Status: 1},
+		Tasks: []models.NewTask{
+			{Name: "Task 1", Status: 0},
+			{Name: "Task 2", Status: 1},
 		},
+	}
+	insertedTasks := []models.Task{
+		{Name: "Task 1", Status: 0},
+		{Name: "Task 2", Status: 1},
 	}
 	reqBody, err := json.Marshal(tasks)
 	assert.NoError(t, err)
@@ -145,17 +149,17 @@ func TestHandler_CreateTasks(t *testing.T) {
 	invalidReqBody, err := json.Marshal(invalidTasks)
 	assert.NoError(t, err)
 	invalidTaskName := models.CreateNewTasksRequest{
-		Tasks: []models.Task{
-			{ID: "1", Name: "", Status: 0},
-			{ID: "2", Name: "", Status: 0},
+		Tasks: []models.NewTask{
+			{Name: "", Status: 0},
+			{Name: "", Status: 0},
 		},
 	}
 	invalidNameReqBody, err := json.Marshal(invalidTaskName)
 	assert.NoError(t, err)
 	invalidTaskStatus := models.CreateNewTasksRequest{
-		Tasks: []models.Task{
-			{ID: "1", Name: "Task 1", Status: 3},
-			{ID: "2", Name: "Task 2", Status: -1},
+		Tasks: []models.NewTask{
+			{Name: "Task 1", Status: 3},
+			{Name: "Task 2", Status: -1},
 		},
 	}
 	invalidStatusReqBody, err := json.Marshal(invalidTaskStatus)
@@ -175,7 +179,7 @@ func TestHandler_CreateTasks(t *testing.T) {
 		{
 			name: "create tasks",
 			mockSetup: func() *http.Request {
-				mockTM.EXPECT().CreateTasks(context.Background(), tasks.Tasks).Return(nil)
+				mockTM.EXPECT().CreateTasks(context.Background(), insertedTasks).Return(nil)
 
 				req := httptest.NewRequest(http.MethodPost, "/tasks", bytes.NewBuffer(reqBody))
 				req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
@@ -280,7 +284,7 @@ func TestHandler_CreateTasks(t *testing.T) {
 		{
 			name: "create tasks with invalid tasks",
 			mockSetup: func() *http.Request {
-				mockTM.EXPECT().CreateTasks(context.Background(), tasks.Tasks).Return(repository.ErrTaskID)
+				mockTM.EXPECT().CreateTasks(context.Background(), insertedTasks).Return(repository.ErrTaskID)
 
 				req := httptest.NewRequest(http.MethodPost, "/tasks", bytes.NewBuffer(reqBody))
 				req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)

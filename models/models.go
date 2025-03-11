@@ -16,9 +16,9 @@ var (
 
 // Task represents a task
 type Task struct {
-	ID     string `json:"id"`     // task id
-	Name   string `json:"name"`   // task name
-	Status int    `json:"status"` // 0 represents an incomplete task, while 1 represents a completed task
+	ID     string `json:"id" example:"9bsv0s2hf8ng030mva9g"` // task id
+	Name   string `json:"name" example:"Task 1"`             // task name
+	Status int    `json:"status" example:"0" enums:"0,1"`    // 0 represents an incomplete task, while 1 represents a completed task
 }
 
 // NewTaskID generates a new task id

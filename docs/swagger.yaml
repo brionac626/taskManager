@@ -1,0 +1,172 @@
+definitions:
+  models.CreateNewTasksRequest:
+    properties:
+      tasks:
+        items:
+          $ref: '#/definitions/models.NewTask'
+        type: array
+    type: object
+  models.ErrorResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  models.NewTask:
+    properties:
+      name:
+        example: Task 1
+        type: string
+      status:
+        enum:
+        - 0
+        - 1
+        example: 1
+        type: integer
+    required:
+    - name
+    - status
+    type: object
+  models.Task:
+    properties:
+      id:
+        description: task id
+        example: 9bsv0s2hf8ng030mva9g
+        type: string
+      name:
+        description: task name
+        example: Task 1
+        type: string
+      status:
+        description: 0 represents an incomplete task, while 1 represents a completed
+          task
+        enum:
+        - 0
+        - 1
+        example: 0
+        type: integer
+    type: object
+  models.UpdateTaskRequest:
+    properties:
+      name:
+        type: string
+      status:
+        enum:
+        - 0
+        - 1
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: theone1632@gmail.com
+    name: API support
+    url: https://github.com/brionac626/taskManager
+  description: This is a sample task manager server.
+  license:
+    name: MIT
+    url: https://github.com/brionac626/taskManager/blob/main/LICENSE
+  title: Task Manager API
+  version: 0.1.2
+paths:
+  /tasks:
+    get:
+      description: Get all tasks.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: tasks retrieved successfully
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/models.Task'
+              type: array
+            type: array
+        "500":
+          description: Filed to get tasks
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get all tasks from the local storage.
+      tags:
+      - Tasks
+    post:
+      consumes:
+      - application/json
+      description: crate new tasks.
+      parameters:
+      - description: tasks to create
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateNewTasksRequest'
+      responses:
+        "201":
+          description: no content returned when successful
+        "400":
+          description: Invalid task fields values
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Failed to create tasks
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create new tasks from the client request.
+      tags:
+      - Tasks
+  /tasks/:id:
+    delete:
+      description: Delete an existing task.
+      parameters:
+      - default: '"9bsv0s2hf8ng030mva9g"'
+        description: target task id
+        example: '"9bsv0s2hf8ng030mva9g"'
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: no content returned when successful
+        "500":
+          description: Failed to update a task fields
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete an existing task by task id.
+      tags:
+      - Tasks
+    put:
+      consumes:
+      - application/json
+      description: Update an existing task fields' values.
+      parameters:
+      - default: '"9bsv0s2hf8ng030mva9g"'
+        description: target task id
+        example: '"9bsv0s2hf8ng030mva9g"'
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: task fields to update
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateTaskRequest'
+      responses:
+        "200":
+          description: no content returned when no changes
+        "400":
+          description: Invalid task fields values
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Failed to update a task fields
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update an existing task by task id.
+      tags:
+      - Tasks
+swagger: "2.0"
