@@ -52,7 +52,7 @@ func (h *Handler) CreateTasks(c echo.Context) error {
 		)
 	}
 
-	for _, task := range req.Tasks {
+	for i, task := range req.Tasks {
 		if err := task.Validate(); err != nil {
 			log.Println("invalid err", err)
 			return c.JSON(
@@ -63,7 +63,7 @@ func (h *Handler) CreateTasks(c echo.Context) error {
 				},
 			)
 		}
-		task.NewTaskID()
+		req.Tasks[i].NewTaskID()
 	}
 
 	if err := h.repo.CreateTasks(ctx, req.Tasks); err != nil {
