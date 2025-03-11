@@ -1,5 +1,8 @@
 # taskManager
 
+[![codecov](https://codecov.io/gh/brionac626/taskManager/graph/badge.svg?token=vKI2foy3CH)](https://codecov.io/gh/brionac626/taskManager)
+[![License](http://img.shields.io/badge/license-mit-blue.svg?style=flat-square)](https://raw.githubusercontent.com/brionac626/deck-rng/main/LICENSE)
+
 This is a backend server project for manage user's tasks
 
 ## How to install
