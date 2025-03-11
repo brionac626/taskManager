@@ -16,7 +16,7 @@ docker-build:
 # Run the application
 run:
 	@echo "Running $(BINARY_NAME)..."
-	@./$(BINARY_NAME)
+	@./$(BINARY_NAME) server
 
 # Run Docker container
 docker-run:
