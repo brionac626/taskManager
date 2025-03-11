@@ -17,6 +17,7 @@ func NewRouter(taskManager repository.TaskManager) *echo.Echo {
 
 	e := echo.New()
 	e.HideBanner = true
+	e.Debug = true
 
 	e.GET("/tasks", handler.GetTasks)
 	e.POST("/tasks", handler.CreateTasks)
