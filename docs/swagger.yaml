@@ -68,7 +68,7 @@ info:
     name: MIT
     url: https://github.com/brionac626/taskManager/blob/main/LICENSE
   title: Task Manager API
-  version: 0.1.2
+  version: "1.0"
 paths:
   /tasks:
     get:

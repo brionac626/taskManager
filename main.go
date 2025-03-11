@@ -8,7 +8,7 @@ import (
 )
 
 // @title Task Manager API
-// @version 0.1.2
+// @version 1.0
 // @description This is a sample task manager server.
 
 // @contact.name API support

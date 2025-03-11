@@ -12,7 +12,7 @@
             "name": "MIT",
             "url": "https://github.com/brionac626/taskManager/blob/main/LICENSE"
         },
-        "version": "0.1.2"
+        "version": "1.0"
     },
     "host": "localhost:8080",
     "paths": {
