@@ -11,4 +11,4 @@ ignore:
   - "./docs"
   - "./models"
   - "./cmd"
-  - "*_mock.go"
+  - "**/*_mock.go"
