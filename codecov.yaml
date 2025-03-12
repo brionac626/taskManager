@@ -1,0 +1,14 @@
+codecov:
+  token: ${{ secrets.CODECOV_TOKEN }}
+
+coverage:
+  precision: 2
+  round: down
+  range: "70...100"
+
+ignore:
+  - "main.go"
+  - "./docs"
+  - "./models"
+  - "./cmd"
+  - "*_mock.go"
